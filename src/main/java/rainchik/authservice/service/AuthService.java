@@ -69,6 +69,13 @@ public class AuthService {
     }
 
     public void saveUserCredentials(UserRegistration userRegistration){
+        if (userRepository.findByUsername(userRegistration.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        if (userRepository.findByEmail(userRegistration.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
         String encodedPassword = passwordEncoder.encode(userRegistration.getPassword());
         UserDetailsImpl user = new UserDetailsImpl();
         user.setUsername(userRegistration.getUsername());

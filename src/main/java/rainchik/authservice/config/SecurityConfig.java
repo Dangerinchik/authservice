@@ -9,6 +9,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,7 +28,7 @@ import rainchik.authservice.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final TokenFilter tokenFilter;
@@ -65,6 +67,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz ->
                         authz.requestMatchers("/", "/error", "/token/**").permitAll()
                                 .requestMatchers("/user/all", "/card/all", "/order/all", "/payment/all").hasAuthority("ROLE_admin")
+                                .requestMatchers("/user/email/**").access(new WebExpressionAuthorizationManager("@resourceSecurity.checkUserEmail(authentication, request)"))
+                                .requestMatchers("/user/{id}/**").access(new WebExpressionAuthorizationManager("@resourceSecurity.checkUserId(authentication, request)"))
                                 .requestMatchers("/user/**", "/order/**", "/payment/**", "/card/**").authenticated()
                                 .anyRequest().authenticated()
                 )
