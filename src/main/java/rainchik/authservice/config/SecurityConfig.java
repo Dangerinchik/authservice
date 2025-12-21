@@ -65,7 +65,7 @@ public class SecurityConfig {
                                         ))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz ->
-                        authz.requestMatchers("/", "/error", "/token/**").permitAll()
+                        authz.requestMatchers("/", "/error", "/auth/**").permitAll()
                                 .requestMatchers("/user/all", "/card/all", "/order/all", "/payment/all").hasAuthority("ROLE_admin")
                                 .requestMatchers("/user/email/**").access(new WebExpressionAuthorizationManager("@resourceSecurity.checkUserEmail(authentication, request)"))
                                 .requestMatchers("/user/{id}/**").access(new WebExpressionAuthorizationManager("@resourceSecurity.checkUserId(authentication, request)"))

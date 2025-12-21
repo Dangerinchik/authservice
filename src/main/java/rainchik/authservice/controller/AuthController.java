@@ -1,6 +1,5 @@
 package rainchik.authservice.controller;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rainchik.authservice.dto.AuthRequest;
@@ -10,7 +9,7 @@ import rainchik.authservice.exception.InvalidRefreshTokenException;
 import rainchik.authservice.service.AuthService;
 
 @RestController
-@RequestMapping("/token")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -20,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> createToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         AuthResponse authResponse = authService.create(authRequest);
         return ResponseEntity.ok(authResponse);
 
@@ -40,5 +39,10 @@ public class AuthController {
         authService.saveUserCredentials(userRegistration);
         return ResponseEntity.ok("User credentials saved successfully");
 
+    }
+
+    @DeleteMapping("/credentials")
+    public ResponseEntity<String> deleteCredentials(@RequestParam String email) {
+        return ResponseEntity.noContent().build();
     }
 }
