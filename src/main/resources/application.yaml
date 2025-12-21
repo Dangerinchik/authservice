@@ -18,3 +18,20 @@ authservice:
   secret: ${JWT_SECRET:vmqu9jeov4vmoih4y32942vm49v}
   expiration_access: ${JWT_EXPIRATION_ACCESS:60000}
   refresh_access: ${JWT_EXPIRATION_REFRESH:720000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  tracing:
+    sampling:
+      probability: 1.0
+
+otel:
+  exporter:
+    otlp:
+      endpoint: http://host.docker.internal:4317
+  resource:
+    attributes:
+      service.name: ${spring.application.name}

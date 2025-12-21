@@ -1,0 +1,5 @@
+replicaCount: 2
+
+container:
+  image: dante4/gateway-auth-service
+  port: 8081

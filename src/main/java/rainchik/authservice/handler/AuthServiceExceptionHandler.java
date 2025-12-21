@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import rainchik.authservice.exception.InvalidRefreshTokenException;
+import rainchik.authservice.exception.UserNotFoundException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -27,6 +28,14 @@ public class AuthServiceExceptionHandler {
     public ResponseEntity<Map<String, String>> handleUsernameNotFoundException(UsernameNotFoundException e) {
         Map<String, String> body = new HashMap<>();
         body.put("error", "Username not found");
+        body.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException e) {
+        Map<String, String> body = new HashMap<>();
+        body.put("error", "User not found");
         body.put("message", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
